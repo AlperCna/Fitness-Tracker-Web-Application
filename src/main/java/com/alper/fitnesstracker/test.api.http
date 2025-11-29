@@ -1,0 +1,33 @@
+### 1. ADIM: GİRİŞ YAP (Token Al)
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "alper2@gmail.com",
+  "password": "12345"
+}
+
+###
+
+### 2. ADIM: KATEGORİ EKLE (Doğru Adres: /categories)
+POST http://localhost:8080/categories
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbHBlcjJAZ21haWwuY29tIiwiaWF0IjoxNzY0NDI1Mjg4LCJleHAiOjE3NjQ1MTE2ODh9.RTptANLQ6DaEEQQdald7yzSHVYjbcMfEvDXYXW3zwR0
+
+{
+  "name": "Kardiyo"
+}
+
+### 3. ADIM: EGZERSİZ EKLE (Koşu Bandı -> Kardiyo Kategorisine)
+POST http://localhost:8080/exercises/1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbHBlcjJAZ21haWwuY29tIiwiaWF0IjoxNzY0NDI1Mjg4LCJleHAiOjE3NjQ1MTE2ODh9.RTptANLQ6DaEEQQdald7yzSHVYjbcMfEvDXYXW3zwR0
+
+{
+  "name": "Koşu Bandı",
+  "description": "30 dakika hafif tempo koşu"
+}
+
+### 4. ADIM: HEPSİNİ LİSTELE
+GET http://localhost:8080/exercises
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbHBlcjJAZ21haWwuY29tIiwiaWF0IjoxNzY0NDI1Mjg4LCJleHAiOjE3NjQ1MTE2ODh9.RTptANLQ6DaEEQQdald7yzSHVYjbcMfEvDXYXW3zwR0
