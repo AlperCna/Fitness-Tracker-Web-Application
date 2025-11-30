@@ -2,8 +2,10 @@ package com.alper.fitnesstracker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Table(name = "workout_sessions")
@@ -17,16 +19,19 @@ public class WorkoutSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Bu session'ı hangi kullanıcı yaptı
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Antrenman tarihi
     private LocalDateTime date;
 
-    // Opsiyonel: Antrenmanın süresi
-    private Integer duration; // dakika
+    private Integer duration;
+
+    @OneToMany(mappedBy = "session", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @JsonManagedReference
+    private Set<WorkoutDetails> details;
 
     @PrePersist
     public void onCreate() {
