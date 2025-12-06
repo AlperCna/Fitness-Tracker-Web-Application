@@ -62,4 +62,50 @@ public class WorkoutController {
 
         return header.substring(7); // "Bearer " sonrası
     }
+
+    // -------------------------------------------------------
+    // 3) Antrenman Sil (DELETE)
+    // -------------------------------------------------------
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteWorkout(@PathVariable Long id, HttpServletRequest httpRequest) {
+        // Token'dan kullanıcıyı tanı
+        String token = extractToken(httpRequest);
+        String email = jwtUtils.extractUsername(token);
+
+        // Servisi çağır
+        workoutService.deleteWorkout(id, email);
+
+        return ResponseEntity.ok("Antrenman başarıyla silindi.");
+    }
+
+
+    // -------------------------------------------------------
+    // 4) Tek Bir Antrenmanı Getir (GET /{id}) - Edit Sayfası İçin
+    // -------------------------------------------------------
+    @GetMapping("/{id}")
+    public ResponseEntity<WorkoutSession> getWorkoutById(
+            @PathVariable Long id,
+            HttpServletRequest httpRequest
+    ) {
+        String token = extractToken(httpRequest);
+        String email = jwtUtils.extractUsername(token);
+
+        return ResponseEntity.ok(workoutService.getWorkoutById(id, email));
+    }
+
+    // -------------------------------------------------------
+    // 5) Antrenmanı Güncelle (PUT /{id})
+    // -------------------------------------------------------
+    @PutMapping("/{id}")
+    public ResponseEntity<WorkoutSession> updateWorkout(
+            @PathVariable Long id,
+            @RequestBody WorkoutRequest request,
+            HttpServletRequest httpRequest
+    ) {
+        String token = extractToken(httpRequest);
+        String email = jwtUtils.extractUsername(token);
+
+        WorkoutSession updatedSession = workoutService.updateWorkout(id, request, email);
+        return ResponseEntity.ok(updatedSession);
+    }
 }
