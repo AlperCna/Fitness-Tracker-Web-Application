@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack - Geleceğin Fitness Asistanı</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+
+        /* Animasyonlar */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+        .animate-pulse-glow { animation: pulse-glow 4s infinite; }
+
+        /* Grid Pattern */
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
+            linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Cam Efekti */
+        .glass-card {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-white min-h-screen flex flex-col relative overflow-x-hidden selection:bg-blue-500 selection:text-white">
+
+<div class="fixed inset-0 bg-grid-pattern pointer-events-none z-0"></div>
+<div class="fixed top-0 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
+<div class="fixed bottom-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-[120px] pointer-events-none z-0"></div>
+
+<nav class="w-full py-5 px-6 md:px-12 flex justify-between items-center border-b border-white/5 backdrop-blur-xl fixed top-0 z-50 bg-slate-900/60 transition-all duration-300">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20 ring-1 ring-white/10">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+        </div>
+        <span class="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">FitTrack</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <a href="/about" class="text-slate-300 hover:text-white font-medium transition text-sm px-4 py-2 rounded-lg hover:bg-white/5">
+            Hakkında
+        </a>
+        <a href="http://localhost:5173/login" class="text-slate-300 hover:text-white font-medium transition text-sm hidden md:block px-4 py-2 rounded-lg hover:bg-white/5">Giriş Yap</a>
+        <a href="http://localhost:5173/register" class="bg-white text-slate-900 hover:bg-blue-50 px-6 py-2.5 rounded-full font-bold text-sm transition transform hover:scale-105 shadow-xl shadow-white/10 ring-2 ring-white/50">
+            Kayıt Ol
+        </a>
+    </div>
+</nav>
+
+<header class="relative pt-40 pb-20 lg:pt-48 lg:pb-32 px-6 text-center z-10 overflow-hidden">
+
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-wider mb-8 hover:bg-blue-500/20 transition cursor-default backdrop-blur-sm animate-fade-in-up">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+            </span>
+        Veri Odaklı Performans Takibi
+    </div>
+
+    <h1 class="text-5xl md:text-7xl lg:text-8xl font-extrabold mb-8 leading-tight tracking-tight drop-shadow-2xl">
+        Sınırlarını Aş. <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-emerald-400">Potansiyelini Keşfet.</span>
+    </h1>
+
+    <p class="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+        Antrenmanlarını kaydet, gelişimini detaylı grafiklerle izle ve <br class="hidden md:block"> 1300+ egzersiz kütüphanesiyle hedeflerine bilimsel yoldan ulaş.
+    </p>
+
+    <div class="flex flex-col sm:flex-row justify-center gap-5 w-full sm:w-auto mb-20">
+        <a href="http://localhost:5173/register" class="group bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-2xl font-bold text-lg transition flex items-center justify-center gap-3 shadow-lg shadow-blue-600/30 ring-4 ring-transparent hover:ring-blue-600/20 active:scale-95">
+            Hemen Başla
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+        </a>
+        <a href="#features" class="px-8 py-4 rounded-2xl font-bold text-lg text-slate-300 border border-slate-700 hover:border-white hover:text-white hover:bg-white/5 transition flex items-center justify-center gap-2 active:scale-95">
+            Nasıl Çalışır?
+        </a>
+    </div>
+
+    <div class="relative max-w-5xl mx-auto mt-10 animate-float">
+        <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-[2rem] blur opacity-30"></div>
+
+        <div class="relative rounded-[1.5rem] overflow-hidden border border-white/10 shadow-2xl bg-slate-900">
+            <div class="h-8 bg-slate-800 border-b border-white/5 flex items-center px-4 gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2670&auto=format&fit=crop"
+                 alt="App Dashboard Preview"
+                 class="w-full object-cover opacity-80 hover:opacity-100 transition duration-700">
+
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-transparent p-8 md:p-12 text-left">
+                <div class="inline-block px-3 py-1 bg-blue-600 rounded-lg text-xs font-bold mb-2">CANLI ÖNİZLEME</div>
+                <h3 class="text-2xl font-bold text-white">Modern Dashboard</h3>
+                <p class="text-slate-300 text-sm mt-1">Tüm verilerin tek ekranda, anlık kontrol altında.</p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="border-y border-white/5 bg-slate-900/30 py-16">
+    <div class="container mx-auto px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+
+            <div class="space-y-2">
+                <p class="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500"
+                   th:text="${exerciseCount}">1300+</p>
+                <p class="text-sm text-slate-400 font-medium uppercase tracking-widest">Egzersiz</p>
+            </div>
+
+            <div class="space-y-2">
+                <p class="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500">%100</p>
+                <p class="text-sm text-slate-400 font-medium uppercase tracking-widest">Ücretsiz</p>
+            </div>
+            <div class="space-y-2">
+                <p class="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500">7/24</p>
+                <p class="text-sm text-slate-400 font-medium uppercase tracking-widest">Erişim</p>
+            </div>
+            <div class="space-y-2">
+                <p class="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500">Güvenli</p>
+                <p class="text-sm text-slate-400 font-medium uppercase tracking-widest">Veri Saklama</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="how-it-works" class="py-24 relative z-10">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">3 Adımda Zirveye</h2>
+            <p class="text-slate-400">Karmaşık süreçler yok. Sadece odaklan ve sonuç al.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            <div class="hidden md:block absolute top-12 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-transparent via-blue-500/30 to-transparent z-0"></div>
+
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 mx-auto bg-slate-800 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-3xl">📝</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mt-6 mb-2">1. Kayıt Ol</h3>
+                <p class="text-slate-400 text-sm px-4">Hızlıca hesabını oluştur ve kişisel paneline erişim sağla.</p>
+            </div>
+
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 mx-auto bg-slate-800 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-3xl">💪</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mt-6 mb-2">2. Antrenman Yap</h3>
+                <p class="text-slate-400 text-sm px-4">Salonda veya evde, yaptığın her hareketi saniyeler içinde kaydet.</p>
+            </div>
+
+            <div class="relative z-10 text-center group">
+                <div class="w-24 h-24 mx-auto bg-slate-800 rounded-full flex items-center justify-center border-4 border-slate-900 shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <span class="text-3xl">📈</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mt-6 mb-2">3. Analiz Et</h3>
+                <p class="text-slate-400 text-sm px-4">Gelişimini grafiklerle izle, eksiklerini gör ve daha ileri git.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="features" class="py-24 bg-slate-900/30 border-t border-white/5">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <span class="text-blue-500 font-bold tracking-wider uppercase text-xs mb-2 block">NEDEN BİZ?</span>
+            <h2 class="text-3xl md:text-4xl font-bold text-white">Gelişiminizi Şansa Bırakmayın</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+                <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-400 mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text:white mb-3">Detaylı Analiz</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Haftalık hacim, toplam süre ve kas grubu dağılımını gösteren grafiklerle ilerlemeni takip et.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-400 mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Devasa Kütüphane</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">1300'den fazla egzersiz arasından seçim yap, GIF'lerle doğru formu öğren ve uygula.</p>
+            </div>
+
+            <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 transition-transform duration-300">
+                <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400 mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">Kolay Takip</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Geçmiş antrenmanlarınıza tek tıkla ulaş, düzenle ve spor geçmişini asla kaybetme.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="py-20 px-6">
+    <div class="max-w-4xl mx-auto bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-10 md:p-16 text-center relative overflow-hidden shadow-2xl">
+        <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+
+        <div class="relative z-10">
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Hala Bekliyor musun?</h2>
+            <p class="text-blue-100 text-lg mb-8 max-w-lg mx-auto">Binlerce sporcu gibi sen de gelişimini profesyonelce takip etmeye bugün başla. Kaybetmek yok, sadece kazanmak var.</p>
+            <a href="http://localhost:5173/register" class="inline-block bg:white text-blue-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition shadow-xl transform hover:scale-105">
+                Ücretsiz Hesabını Oluştur
+            </a>
+        </div>
+    </div>
+</section>
+
+<footer class="border-t border-white/5 py-12 bg-slate-950 text-center relative z-10">
+    <div class="container mx-auto px-6">
+
+        <div class="flex items-center justify-center gap-3 mb-6">
+            <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text:white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+            </div>
+            <span class="text-xl font-bold text-white tracking-tight">FitTrack</span>
+        </div>
+
+        <div class="flex justify-center gap-8 text-slate-400 text-sm font-medium mb-8">
+            <a href="/about" class="hover:text-blue-400 transition">Hakkında</a>
+            <a href="#" class="hover:text-blue-400 transition">Gizlilik Politikası</a>
+            <a href="#" class="hover:text-blue-400 transition">Kullanım Şartları</a>
+            <a href="#" class="hover:text-blue-400 transition">İletişim</a>
+        </div>
+
+        <p class="text-slate-600 text-xs border-t border-white/5 pt-8">
+            &copy; 2025 FitTrack Inc. Tüm hakları saklıdır. | Designed by <span class="text-slate-400">Alper Can</span>
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTrack | Hakkında</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Outfit', sans-serif; }
+
+        .bg-grid-pattern {
+            background-image: linear-gradient(to right, #ffffff05 1px, transparent 1px),
+            linear-gradient(to bottom, #ffffff05 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-950 text-white min-h-screen flex flex-col relative overflow-x-hidden">
+
+<!-- BACKGROUND DECORATION -->
+<div class="fixed inset-0 bg-grid-pattern pointer-events-none"></div>
+<div class="fixed top-20 left-10 w-72 h-72 bg-blue-600/20 blur-[100px] rounded-full"></div>
+<div class="fixed bottom-10 right-10 w-72 h-72 bg-purple-600/20 blur-[100px] rounded-full"></div>
+
+<!-- NAVBAR -->
+<nav class="w-full py-5 px-6 md:px-12 flex justify-between items-center border-b border-white/5 backdrop-blur-xl fixed top-0 z-50 bg-slate-900/60">
+    <div class="flex items-center gap-3">
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+        </div>
+        <span class="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">FitTrack</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+        <a href="/" class="text-slate-300 hover:text-white transition">Ana Sayfa</a>
+        <a href="http://localhost:5173/login" class="text-slate-300 hover:text-white transition hidden md:block">Giriş Yap</a>
+        <a href="http://localhost:5173/register" class="bg-white text-slate-900 hover:bg-blue-50 px-5 py-2.5 rounded-full font-bold text-sm transition">Kayıt Ol</a>
+    </div>
+</nav>
+
+<!-- CONTENT -->
+<main class="pt-40 pb-24 px-6 max-w-5xl mx-auto">
+
+    <!-- HEADER -->
+    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 text-center">
+        Hakkında <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-emerald-400">FitTrack</span>
+    </h1>
+
+    <p class="text-slate-400 text-lg md:text-xl text-center max-w-3xl mx-auto mb-16">
+        FitTrack; sporcuların antrenmanlarını kaydedebildiği, hareketleri inceleyebildiği ve gelişimlerini düzenli olarak analiz edebildiği modern bir fitness takip platformudur.
+        Amacı, kullanıcıların veriye dayalı bir yolculukla hedeflerine daha sistemli bir şekilde ulaşmasını sağlamaktır.
+    </p>
+
+    <!-- PROJECT FEATURES -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-10 mb-20">
+
+        <div class="bg-slate-800/40 p-8 rounded-2xl border border-white/5 hover:-translate-y-2 transition">
+            <h2 class="text-2xl font-bold mb-4 text-blue-400">Projenin Amacı</h2>
+            <p class="text-slate-300 leading-relaxed">
+                FitTrack, antrenman verilerinin düzenli olarak kaydedilmesini, kullanıcıların gelişim süreçlerini grafiklerle analiz edebilmesini ve geniş egzersiz arşivine erişebilmesini sağlar.
+                Sporcuların daha bilinçli ve verimli bir şekilde ilerlemesini desteklemek için tasarlanmıştır.
+            </p>
+        </div>
+
+        <div class="bg-slate-800/40 p-8 rounded-2xl border border-white/5 hover:-translate-y-2 transition">
+            <h2 class="text-2xl font-bold mb-4 text-purple-400">Kullanılan Teknolojiler</h2>
+            <ul class="text-slate-300 space-y-2">
+                <li>• Spring Boot (Backend REST API)</li>
+                <li>• React (Frontend Single Page Application)</li>
+                <li>• MySQL (Veritabanı)</li>
+                <li>• JWT Authentication (Güvenli giriş sistemi)</li>
+                <li>• TailwindCSS (Modern arayüz tasarımı)</li>
+                <li>• Thymeleaf (SSR Landing ve About Sayfaları)</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <!-- DEVELOPER -->
+    <section class="bg-slate-800/30 p-10 rounded-3xl border border-white/5 text-center">
+        <h2 class="text-2xl font-bold text-white mb-4">Geliştirici Hakkında</h2>
+
+        <p class="text-slate-300 max-w-2xl mx-auto leading-relaxed mb-4">
+            Bu proje, Fatih Sultan Mehmet Vakıf Üniversitesi Yazılım Mühendisliği öğrencisi
+            <span class="text-white font-semibold">Alper Can</span> tarafından geliştirilmiştir.
+            Full-stack geliştirme alanında deneyim kazanmayı hedefleyen geliştirici,
+            Java, Spring Boot, React ve veri bilimi teknolojileri üzerine çalışmalar yapmaktadır.
+        </p>
+
+        <div class="flex justify-center gap-6 mt-6">
+            <a href="https://github.com/AlperCna" target="_blank" class="text-slate-400 hover:text-white transition">GitHub</a>
+            <a href="https://www.linkedin.com/in/alper-can-518393253/" target="_blank" class="text-slate-400 hover:text-white transition">LinkedIn</a>
+            <a href="https://medium.com/@alpercn04" target="_blank" class="text-slate-400 hover:text-white transition">Medium</a>
+        </div>
+    </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-white/5 py-8 bg-slate-950 text-center mt-auto">
+    <p class="text-slate-500 text-sm">© 2025 FitTrack Inc. | Tüm hakları saklıdır.</p>
+</footer>
+
+</body>
+</html>

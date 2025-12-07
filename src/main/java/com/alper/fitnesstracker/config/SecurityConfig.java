@@ -33,18 +33,25 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                // YENİ DOĞRU CORS
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/exercises/**").permitAll()
-                        .requestMatchers("/categories/**").permitAll()
 
-                        // 🔥 GÜNCELLEME: Workout endpoint'i JWT gerektirir
+                        // ✅ Ana Sayfa ve About sayfası HERKESE AÇIK
+                        .requestMatchers("/", "/index", "/about").permitAll()
+
+                        // Statik Thymeleaf kaynakları
+                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+
+                        // API endpointleri (açık olanlar)
+                        .requestMatchers("/auth/**", "/exercises/**", "/categories/**").permitAll()
+
+                        // 🔥 JWT gerektiren endpointler
                         .requestMatchers("/workouts/**").authenticated()
+                        .requestMatchers("/analytics/**").authenticated()
 
+                        // Geri kalanlar
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
@@ -71,11 +78,9 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔥 Doğru CORS Yapılandırması
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-
         config.setAllowedOrigins(List.of("http://localhost:5173"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
@@ -83,7 +88,6 @@ public class SecurityConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-
         return source;
     }
 }
