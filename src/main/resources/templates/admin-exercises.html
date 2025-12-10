@@ -31,12 +31,22 @@
 <main class="ml-64 flex-1 p-8">
     <header class="flex justify-between items-center mb-8">
         <h2 class="text-3xl font-bold text-slate-800">Egzersiz Listesi</h2>
-        <a href="/admin/exercises/new" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-            </svg>
-            Yeni Ekle
-        </a>
+
+        <div class="flex gap-3">
+            <button onclick="syncExercises()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                Verileri Güncelle (API)
+            </button>
+
+            <a href="/admin/exercises/new" class="bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg font-bold shadow-lg transition flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Yeni Ekle
+            </a>
+        </div>
     </header>
 
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -44,7 +54,8 @@
             <thead class="bg-slate-100 text-xs uppercase text-slate-500 font-bold border-b">
             <tr>
                 <th class="p-4">ID</th>
-                <th class="p-4">Görsel</th> <th class="p-4">İsim</th>
+                <th class="p-4">Görsel</th>
+                <th class="p-4">İsim</th>
                 <th class="p-4">Kategori</th>
                 <th class="p-4 text-right">İşlemler</th>
             </tr>
@@ -62,8 +73,8 @@
                 <td class="p-4 font-semibold text-slate-700" th:text="${ex.name}">Bench Press</td>
 
                 <td class="p-4">
-                            <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs font-bold border border-blue-100"
-                                  th:text="${ex.category != null ? ex.category.name : '-'}">Göğüs</span>
+                    <span class="bg-blue-50 text-blue-600 px-2 py-1 rounded text-xs font-bold border border-blue-100"
+                          th:text="${ex.category != null ? ex.category.name : '-'}">Göğüs</span>
                 </td>
 
                 <td class="p-4 text-right">
@@ -85,6 +96,43 @@
         </div>
     </div>
 </main>
+
+<script>
+    function syncExercises() {
+        if(!confirm("Bu işlem dış kaynaktan 1300+ egzersizi ve GIF'leri veritabanına çekecektir. İşlem 1-2 dakika sürebilir. Onaylıyor musunuz?")) return;
+
+        // Butonu pasife al ve yazısını değiştir (Kullanıcıya geri bildirim)
+        const btn = document.querySelector("button[onclick='syncExercises()']");
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `
+            <svg class="animate-spin h-5 w-5 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            İşleniyor...
+        `;
+        btn.disabled = true;
+        btn.classList.add("opacity-75", "cursor-not-allowed");
+
+        // Backend'deki endpoint'e istek at
+        fetch('/external/sync', { method: 'POST' })
+            .then(response => {
+                if(response.ok) {
+                    alert("✅ Senkronizasyon Başarılı! Sayfa yenileniyor...");
+                    location.reload();
+                } else {
+                    alert("❌ Hata oluştu! Lütfen konsolu kontrol edin.");
+                }
+            })
+            .catch(err => alert("Bağlantı hatası: " + err))
+            .finally(() => {
+                // İşlem bitince (başarılı veya başarısız) butonu eski haline getir
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.classList.remove("opacity-75", "cursor-not-allowed");
+            });
+    }
+</script>
 
 </body>
 </html>
