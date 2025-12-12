@@ -26,72 +26,92 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableMethodSecurity // Admin tarafında metod bazlı güvenlik için
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    // ========================================================================
-    // 1. ZİNCİR: ADMIN PANELİ (Thymeleaf + Session / Cookie)
-    // ========================================================================
+    // =====================================================================
+    // 1️⃣ ADMIN PANEL (Thymeleaf + Session)
+    // =====================================================================
     @Bean
-    @Order(1) // Önce bu kurallar kontrol edilir
+    @Order(1)
     public SecurityFilterChain adminFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/admin/**") // Sadece /admin ile başlayan istekleri yakalar
-                .csrf(AbstractHttpConfigurer::disable) // Admin paneli için şimdilik kapalı
+                .securityMatcher("/admin/**")
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/admin/login", "/css/**", "/js/**", "/images/**").permitAll() // Login sayfası ve statik dosyalar açık
-                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN") // Diğer her yer SADECE ADMIN'e
+                        .requestMatchers(
+                                "/admin/login",
+                                "/css/**",
+                                "/js/**",
+                                "/images/**"
+                        ).permitAll()
+                        .requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/admin/login") // Birazdan oluşturacağımız özel login sayfası
-                        .loginProcessingUrl("/admin/perform_login") // Formun POST edileceği adres (Spring halleder)
-                        .defaultSuccessUrl("/admin/dashboard", true) // Başarılı girişte buraya git
-                        .failureUrl("/admin/login?error=true") // Hata olursa buraya git
+                        .loginPage("/admin/login")
+                        .loginProcessingUrl("/admin/perform_login")
+                        .defaultSuccessUrl("/admin/dashboard", true)
+                        .failureUrl("/admin/login?error=true")
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/admin/logout")
                         .logoutSuccessUrl("/admin/login?logout=true")
-                        .deleteCookies("JSESSIONID") // Çıkışta session çerezini sil
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
 
         return http.build();
     }
 
-    // ========================================================================
-    // 2. ZİNCİR: API & REACT (JWT + Stateless) - MEVCUT SİSTEMİN
-    // ========================================================================
+    // =====================================================================
+    // 2️⃣ API + REACT (JWT + STATELESS)
+    // =====================================================================
     @Bean
-    @Order(2) // Admin değilse buraya düşer (Geri kalan her şey)
+    @Order(2)
     public SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
         http
-                .securityMatcher("/**") // Geriye kalan tüm istekler
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Session YOK, JWT var
+                .sessionManagement(sm ->
+                        sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
-                        // Public Alanlar (Landing Page, About vb.)
-                        .requestMatchers("/", "/index", "/about", "/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/exercises/**", "/categories/**").permitAll()
+                        // Public
+                        .requestMatchers(
+                                "/",
+                                "/index",
+                                "/about",
+                                "/auth/**",
+                                "/exercises/**",
+                                "/categories/**"
+                        ).permitAll()
 
-                        // Korumalı Alanlar (JWT Şart)
-                        .requestMatchers("/workouts/**", "/analytics/**").authenticated()
+                        // JWT Gerekli
+                        .requestMatchers(
+                                "/workouts/**",
+                                "/progress/**",
+                                "/analytics/**"
+                        ).authenticated()
 
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
         return http.build();
     }
 
-    // --- ORTAK AYARLAR (Aynı kalıyor) ---
+    // =====================================================================
+    // AUTH CONFIG
+    // =====================================================================
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
@@ -101,7 +121,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config
+    ) throws Exception {
         return config.getAuthenticationManager();
     }
 
@@ -110,14 +132,28 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // =====================================================================
+    // ✅ CORS – LOCAL + VERCEL UYUMLU (EN ÖNEMLİ KISIM)
+    // =====================================================================
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // ⚠️ allowCredentials(true) olduğu için allowedOriginPatterns kullanıyoruz
+        config.setAllowedOriginPatterns(List.of(
+                "http://localhost:5173",
+                "https://fitness-tracker-web-application-fro.vercel.app"
+        ));
+
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return source;
     }
