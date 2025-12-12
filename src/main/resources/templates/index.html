@@ -60,8 +60,14 @@
         <a href="/about" class="text-slate-300 hover:text-white font-medium transition text-sm px-4 py-2 rounded-lg hover:bg-white/5">
             Hakkında
         </a>
-        <a href="https://fitness-tracker-web-application-fro.vercel.app/login" class="text-slate-300 hover:text-white font-medium transition text-sm hidden md:block px-4 py-2 rounded-lg hover:bg-white/5">Giriş Yap</a>
-        <a href="https://fitness-tracker-web-application-fro.vercel.app/registerr" class="bg-white text-slate-900 hover:bg-blue-50 px-6 py-2.5 rounded-full font-bold text-sm transition transform hover:scale-105 shadow-xl shadow-white/10 ring-2 ring-white/50">
+
+        <a href="https://fitness-tracker-web-application-fro.vercel.app/login"
+           class="text-slate-300 hover:text-white font-medium transition text-sm hidden md:block px-4 py-2 rounded-lg hover:bg-white/5">
+            Giriş Yap
+        </a>
+
+        <a href="https://fitness-tracker-web-application-fro.vercel.app/register"
+           class="bg-white text-slate-900 hover:bg-blue-50 px-6 py-2.5 rounded-full font-bold text-sm transition transform hover:scale-105 shadow-xl shadow-white/10 ring-2 ring-white/50">
             Kayıt Ol
         </a>
     </div>
@@ -125,7 +131,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div class="space-y-2">
                 <p class="text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-500"
-                   th:text="${exerciseCount}">1300+</p>
+                   th:text="${exerciseCount != null ? exerciseCount : '1300+'}">1300+</p>
                 <p class="text-sm text-slate-400 font-medium uppercase tracking-widest">Egzersiz</p>
             </div>
             <div class="space-y-2">
@@ -258,5 +264,3 @@
 
 </body>
 </html>
-
-<!-- PUSH TEST -->
