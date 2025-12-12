@@ -1,11 +1,11 @@
-# 1. AŞAMA: Build (Maven ile projeyi derle)
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# 1. AŞAMA: Build (Maven + Java 21)
+FROM maven:3.9.6-eclipse-temurin-21 AS build
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
 
-# 2. AŞAMA: Run (Uygulamayı çalıştır)
-FROM eclipse-temurin:17-jdk
+# 2. AŞAMA: Run (Java 21)
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
