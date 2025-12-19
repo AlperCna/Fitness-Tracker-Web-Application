@@ -133,13 +133,13 @@ public class SecurityConfig {
     }
 
     // =====================================================================
-    // ✅ CORS – LOCAL + VERCEL UYUMLU (EN ÖNEMLİ KISIM)
+    // ✅ CORS – LOCAL + VERCEL UYUMLU
     // =====================================================================
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
-        // ⚠️ allowCredentials(true) olduğu için allowedOriginPatterns kullanıyoruz
+
         config.setAllowedOriginPatterns(List.of(
                 "http://localhost:5173",
                 "https://fitness-tracker-web-application-fro.vercel.app"

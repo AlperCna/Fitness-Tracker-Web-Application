@@ -28,7 +28,6 @@ public class ExternalApiService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     // --- AKILLI ÇEKİM METODU ---
-    // --- AKILLI ÇEKİM METODU (DÜZELTİLDİ) ---
     public List<ExternalExerciseDto> fetchAllExercises() {
         List<ExternalExerciseDto> allExercises = new ArrayList<>();
         int limitRequest = 50; // API'den 50 isteyelim (O 10 verse bile sorun değil)
