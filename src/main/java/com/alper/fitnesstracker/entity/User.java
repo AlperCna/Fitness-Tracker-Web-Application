@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List; // List importu eklendi
 import java.util.Set;
+import java.util.ArrayList; // ArrayList importu eklendi
 
 @Entity
 @Table(name = "users")
@@ -28,8 +30,7 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // --- EKSİK OLAN KISIM BURASIYDI ---
-    // Kullanıcı ile Rolleri birbirine bağlıyoruz (Çoka-Çok İlişki)
+    // --- MEVCUT ROL İLİŞKİSİ ---
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_roles",
@@ -37,7 +38,17 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
-    // ----------------------------------
+
+
+    // Kullanıcı silinirse, ona ait Antrenmanlar da silinsin
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkoutSession> workouts = new ArrayList<>();
+
+    // Kullanıcı silinirse, ona ait Gelişim Logları da silinsin
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProgressLog> progressLogs = new ArrayList<>();
+
+    // =================================================================
 
     @PrePersist
     public void onCreate() {

@@ -3,13 +3,12 @@ package com.alper.fitnesstracker.controller;
 import com.alper.fitnesstracker.entity.Category;
 import com.alper.fitnesstracker.entity.Exercise;
 import com.alper.fitnesstracker.entity.User;
-import com.alper.fitnesstracker.repository.CategoryRepository; // EKLENDİ
-import com.alper.fitnesstracker.repository.ExerciseRepository; // EKLENDİ
+import com.alper.fitnesstracker.repository.CategoryRepository;
+import com.alper.fitnesstracker.repository.ExerciseRepository;
 import com.alper.fitnesstracker.repository.UserRepository;
-import com.alper.fitnesstracker.service.CategoryService;
-import com.alper.fitnesstracker.service.ExerciseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,33 +18,40 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PageController {
 
-    private final ExerciseService exerciseService;
-    private final CategoryService categoryService;
     private final UserRepository userRepository;
-
-    // 🔥 YENİ EKLENENLER: Admin doğrudan veritabanı ile konuşsun
     private final ExerciseRepository exerciseRepository;
     private final CategoryRepository categoryRepository;
 
-    // --- PUBLIC PAGES ---
+    // =================================================================
+    // PUBLIC PAGES
+    // =================================================================
     @GetMapping("/about")
-    public String about() { return "about"; }
+    public String about() {
+        return "about";
+    }
 
-    // --- ADMIN AUTH ---
+    // =================================================================
+    // ADMIN AUTHENTICATION
+    // =================================================================
     @GetMapping("/admin/login")
-    public String adminLoginPage() { return "admin-login"; }
+    public String adminLoginPage() {
+        return "admin-login";
+    }
 
-    // --- ADMIN DASHBOARD ---
+    // =================================================================
+    // ADMIN DASHBOARD
+    // =================================================================
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model) {
-        model.addAttribute("totalExercises", exerciseRepository.count()); // Servis yerine Repository (Daha hızlı)
+        // Fetching counts directly from repositories for better performance
+        model.addAttribute("totalExercises", exerciseRepository.count());
         model.addAttribute("totalCategories", categoryRepository.count());
         model.addAttribute("totalUsers", userRepository.count());
         return "admin-dashboard";
     }
 
     // =================================================================
-    // 👥 1. KULLANICI YÖNETİMİ
+    // 1. USER MANAGEMENT (CRUD)
     // =================================================================
     @GetMapping("/admin/users")
     public String listUsers(Model model) {
@@ -54,18 +60,23 @@ public class PageController {
         return "admin-users";
     }
 
+    /**
+     * Deletes a user by ID.
+     * @Transactional is used to ensure all related data (workouts, logs)
+     * are deleted atomically before the user is removed.
+     */
     @GetMapping("/admin/users/delete/{id}")
+    @Transactional
     public String deleteUser(@PathVariable Long id) {
-        userRepository.deleteById(id); // ✅ BU ZATEN ÇALIŞIYORDU
+        userRepository.deleteById(id);
         return "redirect:/admin/users";
     }
 
     // =================================================================
-    // 🏷️ 2. KATEGORİ YÖNETİMİ
+    // 2. CATEGORY MANAGEMENT (CRUD)
     // =================================================================
     @GetMapping("/admin/categories")
     public String listCategories(Model model) {
-        // Listelemede service kullanabilirsin (sorun yoksa), ama repository daha garanti
         model.addAttribute("categories", categoryRepository.findAll());
         model.addAttribute("newCategory", new Category());
         return "admin-categories";
@@ -73,46 +84,48 @@ public class PageController {
 
     @PostMapping("/admin/categories/save")
     public String saveCategory(@ModelAttribute Category category) {
-        categoryRepository.save(category); // 🔥 Service yerine Repository
+        categoryRepository.save(category);
         return "redirect:/admin/categories";
     }
 
     @GetMapping("/admin/categories/delete/{id}")
+    @Transactional
     public String deleteCategory(@PathVariable Long id) {
-        // 🔥 KRİTİK DÜZELTME: Service yerine Repository kullandık
+        // Direct repository call to bypass service-level security checks for Admin
         categoryRepository.deleteById(id);
         return "redirect:/admin/categories";
     }
 
     // =================================================================
-    // 🏋️ 3. EGZERSİZ YÖNETİMİ
+    // 3. EXERCISE MANAGEMENT (CRUD)
     // =================================================================
     @GetMapping("/admin/exercises")
     public String listExercises(Model model) {
-        model.addAttribute("exercises", exerciseRepository.findAll()); // Repository
+        model.addAttribute("exercises", exerciseRepository.findAll());
         return "admin-exercises";
     }
 
     @GetMapping("/admin/exercises/new")
     public String showAddExerciseForm(Model model) {
         model.addAttribute("exercise", new Exercise());
-        model.addAttribute("categories", categoryRepository.findAll()); // Repository
+        model.addAttribute("categories", categoryRepository.findAll());
         return "admin-exercise-form";
     }
 
     @PostMapping("/admin/exercises/save")
     public String saveExercise(@ModelAttribute Exercise exercise, @RequestParam Long categoryId) {
-        // Egzersiz kaydederken kategori set etmemiz lazım
+        // Link the exercise to the selected category before saving
         Category cat = categoryRepository.findById(categoryId).orElse(null);
         exercise.setCategory(cat);
-        exerciseRepository.save(exercise); // 🔥 Repository ile kayıt
+        exerciseRepository.save(exercise);
         return "redirect:/admin/exercises";
     }
 
     @GetMapping("/admin/exercises/delete/{id}")
+    @Transactional
     public String deleteExercise(@PathVariable Long id) {
-        // 🔥 KRİTİK DÜZELTME: Service yerine Repository kullandık
-        // Service katmanındaki güvenlik kontrolünü atlamış olduk.
+        // Direct repository call to ensure Admin can delete any exercise
+        // regardless of ownership or service-level restrictions.
         exerciseRepository.deleteById(id);
         return "redirect:/admin/exercises";
     }
