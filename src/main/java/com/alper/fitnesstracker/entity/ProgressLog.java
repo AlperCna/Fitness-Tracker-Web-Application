@@ -2,6 +2,7 @@ package com.alper.fitnesstracker.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore; // 👈 EKLENDİ
 
 import java.time.LocalDateTime;
 
@@ -17,15 +18,14 @@ public class ProgressLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Bu gelişim bilgisi hangi kullanıcıya ait?
+    // 👇 BURASI KRİTİK: @JsonIgnore eklendi.
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
-    // Kullanıcının o günkü kilosu
     private Double weight;
 
-    // Giriş tarihi (otomatik atanır)
     private LocalDateTime date;
 
     @PrePersist

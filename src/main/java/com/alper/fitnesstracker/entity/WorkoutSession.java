@@ -3,6 +3,7 @@ package com.alper.fitnesstracker.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore; // 👈 EKLENDİ
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -19,8 +20,11 @@ public class WorkoutSession {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 👇 BURASI KRİTİK: @JsonIgnore eklendi.
+    // Artık Workout -> User -> Workout döngüsü oluşmayacak.
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     private LocalDateTime date;

@@ -3,6 +3,7 @@ package com.alper.fitnesstracker.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore; // 👈 EKLENDİ
 
 @Entity
 @Table(name = "workout_details")
@@ -19,6 +20,8 @@ public class WorkoutDetails {
     @ManyToOne
     @JoinColumn(name = "session_id")
     @JsonBackReference
+    // Ekstra güvenlik için opsiyonel olarak @JsonIgnore da eklenebilir ama
+    // JsonBackReference genelde yeterlidir. Şimdilik böyle kalsın.
     private WorkoutSession session;
 
     @ManyToOne
